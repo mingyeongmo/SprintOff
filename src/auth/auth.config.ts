@@ -1,4 +1,3 @@
-// src/auth/auth.config.ts
 import Google from "next-auth/providers/google"
 
 export const authConfig = {
