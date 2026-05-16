@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
-const EmployeeLayout = ({children}: {children:React.ReactNode}) => {
-    return (
-        <div>
-            {children}
-        </div>
-    );
+const EmployeeLayout = ({ children }: { children: React.ReactNode }) => {
+  return <div>{children}</div>;
 };
 
 export default EmployeeLayout;
