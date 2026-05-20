@@ -26,8 +26,8 @@ model User {
 
   role      Role     @default(EMPLOYEE)
 
-  companyId String
-  company   Company  @relation(fields: [companyId], references: [id])
+  companyId String?
+  company   Company?  @relation(fields: [companyId], references: [id])
 
   createdAt DateTime @default(now())
 }

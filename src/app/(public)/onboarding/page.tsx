@@ -1,15 +1,36 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const OnboardingPage = () => {
+  const router = useRouter();
+
   const [companyName, setCompanyName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     console.log(companyName);
+
+    const response = await fetch("/api/company", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        companyName,
+      }),
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    router.push("/admin/dashboard");
   };
 
   return (
