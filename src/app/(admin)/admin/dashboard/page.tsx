@@ -1,3 +1,5 @@
+import { InviteMemberForm } from "./InviteMemberForm";
+
 const AdminDashboardPage = () => {
   return (
     <main className="app-shell">
@@ -8,7 +10,16 @@ const AdminDashboardPage = () => {
         </div>
       </header>
 
-      <section className="dashboard-grid">
+      <section className="dashboard-grid admin-dashboard-grid">
+        <article className="panel">
+          <h2>팀원 초대</h2>
+          <p>
+            초대할 이메일과 권한을 선택하면 7일 동안 유효한 초대장이
+            발송됩니다.
+          </p>
+          <InviteMemberForm />
+        </article>
+
         <article className="panel">
           <h2>이번 달 요약</h2>
           <div className="metric-list">

@@ -55,6 +55,7 @@ a {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -260,8 +261,54 @@ button:disabled {
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
 }
 
+.admin-dashboard-grid {
+  grid-template-columns: minmax(320px, 1fr) minmax(280px, 0.8fr);
+}
+
 .panel {
   min-height: 260px;
+}
+
+.admin-dashboard-grid .panel:last-child {
+  grid-column: 1 / -1;
+}
+
+.invite-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.invite-form label {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.invite-form input,
+.invite-form select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  padding: 12px 13px;
+}
+
+.form-success {
+  color: #047857;
+  font-weight: 700;
+}
+
+.form-note {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.form-note span {
+  word-break: break-all;
+  color: var(--primary);
 }
 
 .risk-panel ul,
@@ -338,6 +385,10 @@ button:disabled {
   .feature-grid,
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard-grid .panel:last-child {
+    grid-column: auto;
   }
 
   .form-panel,

@@ -8,31 +8,66 @@ datasource db {
 }
 
 model Company {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  name      String
+  name String
 
-  users     User[]
+  users       User[]
+  invitations Invitation[]
 
   createdAt DateTime @default(now())
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  email     String   @unique
-  name      String?
-  image     String?
+  email String  @unique
+  name  String?
+  image String?
 
-  role      Role     @default(EMPLOYEE)
+  role Role @default(EMPLOYEE)
 
   companyId String?
-  company   Company?  @relation(fields: [companyId], references: [id])
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  sentInvitations Invitation[] @relation("SentInvitations")
 
   createdAt DateTime @default(now())
+}
+
+model Invitation {
+  id     String           @id @default(cuid())
+  email  String
+  role   Role             @default(EMPLOYEE)
+  token  String           @unique
+  status InvitationStatus @default(PENDING)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  invitedById String
+  invitedBy   User   @relation("SentInvitations", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  expiresAt  DateTime
+  acceptedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([companyId])
+  @@index([status])
+  @@index([companyId, email, status])
 }
 
 enum Role {
   ADMIN
   EMPLOYEE
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELED
 }

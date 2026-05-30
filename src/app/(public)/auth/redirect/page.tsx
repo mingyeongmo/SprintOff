@@ -1,6 +1,6 @@
 import { auth } from "@/auth/auth";
 import { prisma } from "@/lib/prisma";
-import { Role } from "@prisma/client";
+import { InvitationStatus, Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 const AuthRedirectPage = async () => {
@@ -10,9 +10,14 @@ const AuthRedirectPage = async () => {
     redirect("/");
   }
 
-  const user = await prisma.user.findUnique({
+  const sessionEmail = session.user.email.trim().toLowerCase();
+
+  const user = await prisma.user.findFirst({
     where: {
-      email: session.user.email,
+      email: {
+        equals: sessionEmail,
+        mode: "insensitive",
+      },
     },
     select: {
       companyId: true,
@@ -21,6 +26,26 @@ const AuthRedirectPage = async () => {
   });
 
   if (!user?.companyId) {
+    const invitation = await prisma.invitation.findFirst({
+      where: {
+        email: sessionEmail,
+        status: InvitationStatus.PENDING,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        token: true,
+      },
+    });
+
+    if (invitation) {
+      redirect(`/invite/${invitation.token}`);
+    }
+
     redirect("/onboarding");
   }
 
