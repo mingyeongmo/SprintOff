@@ -6,7 +6,7 @@ export default auth((req) => {
 
   const pathname = req.nextUrl.pathname;
 
-  const publicRoutes = ["/", "/login", "/onboarding"];
+  const publicRoutes = ["/", "/login", "/onboarding", "/auth/redirect"];
 
   const isPublicRoute = publicRoutes.includes(pathname);
 
@@ -19,7 +19,7 @@ export default auth((req) => {
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 });
 
