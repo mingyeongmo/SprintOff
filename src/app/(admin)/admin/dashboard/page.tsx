@@ -1,3 +1,4 @@
+import { AdminLogoutButton } from "./AdminLogoutButton";
 import { InviteMemberForm } from "./InviteMemberForm";
 
 const AdminDashboardPage = () => {
@@ -8,6 +9,7 @@ const AdminDashboardPage = () => {
           <p className="eyebrow">Admin Dashboard</p>
           <h1>팀 휴가 리스크 현황</h1>
         </div>
+        <AdminLogoutButton />
       </header>
 
       <section className="dashboard-grid admin-dashboard-grid">
