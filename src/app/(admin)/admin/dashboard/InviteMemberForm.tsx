@@ -4,6 +4,13 @@ import { useState } from "react";
 
 type InviteRole = "ADMIN" | "EMPLOYEE";
 
+type InviteSubmitState = {
+  isSubmitting: boolean;
+  message: string;
+  errorMessage: string;
+  inviteUrl: string;
+};
+
 type InviteResponse = {
   success?: boolean;
   error?: string;
@@ -11,21 +18,28 @@ type InviteResponse = {
   resent?: boolean;
 };
 
+const initialSubmitState: InviteSubmitState = {
+  isSubmitting: false,
+  message: "",
+  errorMessage: "",
+  inviteUrl: "",
+};
+
 export const InviteMemberForm = () => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<InviteRole>("EMPLOYEE");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [inviteUrl, setInviteUrl] = useState("");
+  const [submitState, setSubmitState] =
+    useState<InviteSubmitState>(initialSubmitState);
+
+  const { isSubmitting, message, errorMessage, inviteUrl } = submitState;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsSubmitting(true);
-    setMessage("");
-    setErrorMessage("");
-    setInviteUrl("");
+    setSubmitState({
+      ...initialSubmitState,
+      isSubmitting: true,
+    });
 
     const response = await fetch("/api/invitations", {
       method: "POST",
@@ -40,20 +54,23 @@ export const InviteMemberForm = () => {
 
     const data = (await response.json()) as InviteResponse;
 
-    setIsSubmitting(false);
-
     if (!response.ok) {
-      setErrorMessage(data.error ?? "초대 발송에 실패했습니다.");
+      setSubmitState({
+        ...initialSubmitState,
+        errorMessage: data.error ?? "초대 발송에 실패했습니다.",
+      });
       return;
     }
 
     setEmail("");
-    setInviteUrl(data.inviteUrl ?? "");
-    setMessage(
-      data.resent
+    setSubmitState({
+      isSubmitting: false,
+      errorMessage: "",
+      inviteUrl: data.inviteUrl ?? "",
+      message: data.resent
         ? "이미 대기 중인 초대를 다시 발송했습니다."
         : "초대 이메일을 발송했습니다.",
-    );
+    });
   };
 
   return (
