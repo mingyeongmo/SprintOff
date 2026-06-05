@@ -12,26 +12,70 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
+    const companyName = String(body.companyName ?? "").trim();
+    const sessionEmail = session.user.email.trim().toLowerCase();
 
-    const { companyName } = body;
+    if (!companyName) {
+      return NextResponse.json(
+        { error: "회사 또는 팀 이름을 입력해주세요." },
+        { status: 400 },
+      );
+    }
 
-    const company = await prisma.company.create({
-      data: {
-        name: companyName,
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email: {
+          equals: sessionEmail,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        id: true,
+        companyId: true,
       },
     });
 
-    const user = await prisma.user.create({
-      data: {
-        email: session.user.email,
+    if (existingUser?.companyId) {
+      return NextResponse.json(
+        { error: "이미 워크스페이스에 소속된 사용자입니다." },
+        { status: 409 },
+      );
+    }
 
-        name: session.user.name ?? null,
-        image: session.user.image ?? null,
+    const { company, user } = await prisma.$transaction(async (tx) => {
+      const company = await tx.company.create({
+        data: {
+          name: companyName,
+        },
+      });
 
-        role: Role.ADMIN,
+      const user = existingUser
+        ? await tx.user.update({
+            where: {
+              id: existingUser.id,
+            },
+            data: {
+              email: sessionEmail,
+              name: session.user?.name ?? null,
+              image: session.user?.image ?? null,
+              role: Role.ADMIN,
+              companyId: company.id,
+            },
+          })
+        : await tx.user.create({
+            data: {
+              email: sessionEmail,
+              name: session.user?.name ?? null,
+              image: session.user?.image ?? null,
+              role: Role.ADMIN,
+              companyId: company.id,
+            },
+          });
 
-        companyId: company.id,
-      },
+      return {
+        company,
+        user,
+      };
     });
 
     return NextResponse.json({
