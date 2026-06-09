@@ -16,6 +16,8 @@ model Company {
   invitations Invitation[]
 
   createdAt DateTime @default(now())
+
+  vacationRequests VacationRequest[]
 }
 
 model User {
@@ -33,6 +35,8 @@ model User {
   sentInvitations Invitation[] @relation("SentInvitations")
 
   createdAt DateTime @default(now())
+
+  vacationRequests VacationRequest[]
 }
 
 model Invitation {
@@ -69,5 +73,47 @@ enum InvitationStatus {
   PENDING
   ACCEPTED
   EXPIRED
+  CANCELED
+}
+
+model VacationRequest {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  type   VacationType
+  status VacationStatus @default(PENDING)
+
+  startDate DateTime
+  endDate   DateTime
+  reason    String?
+
+  reviewedById String?
+  reviewedAt   DateTime?
+  rejectReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum VacationType {
+  ANNUAL
+  HALF_DAY
+  SICK
+  ETC
+}
+
+enum VacationStatus {
+  PENDING
+  APPROVED
+  REJECTED
   CANCELED
 }
