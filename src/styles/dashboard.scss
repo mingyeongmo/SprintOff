@@ -1,0 +1,283 @@
+.dashboard {
+  &-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+    background: var(--background);
+  }
+
+  &-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    border-right: 1px solid #2b3448;
+    background: #1f2937;
+    color: #f8fafc;
+    padding: 20px 14px;
+
+    &-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 4px 18px;
+      border-bottom: 1px solid #334155;
+    }
+
+    &-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+      border-radius: 8px;
+      background: #334155;
+      padding: 10px;
+
+      div:last-child {
+        display: grid;
+        gap: 2px;
+      }
+
+      span {
+        color: #94a3b8;
+        font-size: 0.78rem;
+      }
+    }
+  }
+
+  &-logo-mark {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: 6px;
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 800;
+  }
+
+  &-nav {
+    display: grid;
+    gap: 6px;
+
+    &-title {
+      margin: 14px 6px 6px;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    &-link {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border-radius: 6px;
+      color: #cbd5e1;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+
+      &:hover,
+      &.is-active {
+        background: #475569;
+        color: #ffffff;
+      }
+
+      &.is-active span {
+        color: #60a5fa;
+      }
+    }
+  }
+
+  &-user-avatar {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 800;
+  }
+
+  &-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-layout-header {
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    padding: 14px 28px;
+
+    h1 {
+      margin-bottom: 4px;
+      font-size: 1.2rem;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  }
+
+  &-content {
+    width: 100%;
+    padding: 24px 28px 48px;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 16px;
+    padding-bottom: 48px;
+  }
+}
+
+.admin-dashboard-grid {
+  grid-template-columns: minmax(320px, 1fr) minmax(280px, 0.8fr);
+
+  .panel:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.form-preview,
+.invite-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-preview {
+  margin-top: 28px;
+}
+
+.invite-form {
+  margin-top: 22px;
+}
+
+.form-preview label,
+.invite-form label {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.form-preview input,
+.form-preview textarea,
+.invite-form input,
+.invite-form select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  padding: 12px 13px;
+}
+
+.risk-panel {
+  ul {
+    display: grid;
+    gap: 10px;
+    margin: 18px 0;
+    padding-left: 18px;
+  }
+}
+
+.risk-score {
+  display: inline-block;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 8px 12px;
+}
+
+.metric-list {
+  display: grid;
+  gap: 14px;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  span {
+    color: var(--muted);
+  }
+
+  strong {
+    font-size: 1.35rem;
+  }
+}
+
+.request-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+  padding-left: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  span {
+    color: var(--muted);
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard {
+    &-shell {
+      grid-template-columns: 1fr;
+    }
+
+    &-sidebar {
+      position: static;
+      height: auto;
+    }
+
+    &-layout-header {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 18px;
+    }
+
+    &-content {
+      padding: 18px;
+    }
+
+    &-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .admin-dashboard-grid {
+    .panel:last-child {
+      grid-column: auto;
+    }
+  }
+}

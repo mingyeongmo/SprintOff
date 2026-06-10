@@ -1,0 +1,82 @@
+.primary-button,
+.text-button {
+  border: 0;
+  border-radius: 8px;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.primary-button {
+  width: fit-content;
+  padding: 13px 18px;
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.primary-button:hover {
+  background: var(--primary-dark);
+}
+
+.text-button {
+  padding: 10px 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.text-button:hover {
+  color: var(--foreground);
+}
+
+.panel,
+.form-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.panel {
+  min-height: 260px;
+  padding: 24px;
+}
+
+.panel h2 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.panel p,
+.panel li {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.form-error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.form-success {
+  color: #047857;
+  font-weight: 700;
+}
+
+.form-note {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.form-note span {
+  word-break: break-all;
+  color: var(--primary);
+}
+
+@media (max-width: 760px) {
+  .panel,
+  .form-panel {
+    padding: 20px;
+  }
+}

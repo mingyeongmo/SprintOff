@@ -1,4 +1,7 @@
-import "./globals.css";
+import "./globals.scss";
+import "@/styles/components.scss";
+import "@/styles/landing.scss";
+import "@/styles/dashboard.scss";
 
 export default function RootLayout({
   children,
