@@ -114,7 +114,10 @@ const InviteAcceptPage = async ({ params }: InviteAcceptPageProps) => {
     },
   });
 
-  if (existingUser?.companyId && existingUser.companyId !== invitation.companyId) {
+  if (
+    existingUser?.companyId &&
+    existingUser.companyId !== invitation.companyId
+  ) {
     return (
       <InvitationResult
         title="이미 다른 워크스페이스에 속해 있습니다."
