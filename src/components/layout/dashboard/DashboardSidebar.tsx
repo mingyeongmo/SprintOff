@@ -14,10 +14,17 @@ type DashboardSidebarProps = {
 };
 
 const menusByRole: Record<DashboardRole, DashboardMenu[]> = {
-  ADMIN: [{ label: "휴가 관리", href: "/admin/dashboard" }],
+  ADMIN: [
+    { label: "대시보드", href: "/admin/dashboard" },
+    { label: "휴가 관리", href: "/admin/vacation-manage" },
+    { label: "팀 캘린더", href: "/admin/team-calender" },
+    { label: "구성원 / 권한", href: "/admin/member-permission" },
+  ],
   EMPLOYEE: [
-    { label: "휴가 신청", href: "/dashboard" },
-    { label: "구성원 / 권한", href: "/dashboard/auth" },
+    { label: "대시 보드", href: "/dashboard" },
+    { label: "휴가 신청", href: "/vacation-request" },
+    { label: "내 휴가 내역", href: "/vacation-history" },
+    { label: "팀 캘린더", href: "/team-calender" },
   ],
 };
 
@@ -50,6 +57,18 @@ const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
             {menu.label}
           </Link>
         ))}
+        <p className="dashboard-nav-title">SETTING</p>
+        <Link
+          className={
+            isActive("/dashboard/setting")
+              ? "dashboard-nav-link is-active"
+              : "dashboard-nav-link"
+          }
+          href={"/dashboard/setting"}
+        >
+          <span aria-hidden="true">•</span>
+          환경설정
+        </Link>
       </nav>
 
       <div className="dashboard-sidebar-user">
