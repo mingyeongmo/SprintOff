@@ -2,30 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { DashboardRole } from "./DashboardShell";
-
-type DashboardMenu = {
-  label: string;
-  href: string;
-};
+import { DashboardRole, menusByRole } from "./DashboardRoutes";
 
 type DashboardSidebarProps = {
   role: DashboardRole;
-};
-
-const menusByRole: Record<DashboardRole, DashboardMenu[]> = {
-  ADMIN: [
-    { label: "대시보드", href: "/admin/dashboard" },
-    { label: "휴가 관리", href: "/admin/vacation-manage" },
-    { label: "팀 캘린더", href: "/admin/team-calender" },
-    { label: "구성원 / 권한", href: "/admin/member-permission" },
-  ],
-  EMPLOYEE: [
-    { label: "대시 보드", href: "/dashboard" },
-    { label: "휴가 신청", href: "/vacation-request" },
-    { label: "내 휴가 내역", href: "/vacation-history" },
-    { label: "팀 캘린더", href: "/team-calender" },
-  ],
 };
 
 const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
