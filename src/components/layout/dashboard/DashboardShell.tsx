@@ -2,6 +2,7 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardSidebar from "./DashboardSidebar";
 import { DashboardRole } from "./DashboardRoutes";
 import { auth } from "@/auth/auth";
+import "@/styles/dashboard.scss";
 
 type DashboardShellProps = {
   children: React.ReactNode;
