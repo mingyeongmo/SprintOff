@@ -1,15 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import { differenceInCalendarDays, format } from "date-fns";
 
 const VacationRequestForm = () => {
   const [selectedVacationType, setSelectedVacationType] = useState("연차");
+
+  const TODAY = format(new Date(), "yyyy-MM-dd");
+
+  const [startDate, setStartDate] = useState(TODAY);
+  const [endDate, setEndDate] = useState(TODAY);
+
+  const days =
+    differenceInCalendarDays(new Date(endDate), new Date(startDate)) + 1;
+
   const vacationTypes = [
     { label: "연차", description: "1일 단위 휴가" },
     { label: "반차", description: "오전/오후 0.5일" },
     { label: "병가", description: "질병, 부상 치료" },
     { label: "기타", description: "경조사, 공가 등" },
   ];
+
+  console.log(selectedVacationType);
+
+  const formSubmit = () => {
+    console.log("vacationType : ", selectedVacationType);
+    console.log(`startDate : ${startDate} endDate : ${endDate}`);
+    console.log(`days : ${days}`);
+  };
 
   return (
     <form className="vacation-request__form">
@@ -48,13 +66,29 @@ const VacationRequestForm = () => {
             <div className="vacation-request__date-grid">
               <label>
                 시작일
-                <input type="date" defaultValue="2026-06-25" />
+                <input
+                  type="date"
+                  min={TODAY}
+                  value={startDate}
+                  onChange={(e) => {
+                    if (!e.target.value) return;
+                    setStartDate(e.target.value);
+                  }}
+                />
               </label>
 
               <label>
                 종료일
-                <input type="date" defaultValue="2026-06-26" />
-                <span>총 2일 신청</span>
+                <input
+                  type="date"
+                  min={startDate}
+                  value={endDate}
+                  onChange={(e) => {
+                    if (!e.target.value) return;
+                    setEndDate(e.target.value);
+                  }}
+                />
+                <span>총 {days}일 신청</span>
               </label>
             </div>
           </section>
@@ -82,7 +116,7 @@ const VacationRequestForm = () => {
           <button className="text-button" type="button">
             취소
           </button>
-          <button className="primary-button" type="button">
+          <button className="primary-button" type="button" onClick={formSubmit}>
             신청 제출
           </button>
         </div>
