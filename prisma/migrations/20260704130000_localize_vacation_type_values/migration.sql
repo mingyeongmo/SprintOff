@@ -1,0 +1,4 @@
+ALTER TYPE "VacationType" RENAME VALUE 'ANNUAL' TO '연차';
+ALTER TYPE "VacationType" RENAME VALUE 'HALF_DAY' TO '반차';
+ALTER TYPE "VacationType" RENAME VALUE 'SICK' TO '병가';
+ALTER TYPE "VacationType" RENAME VALUE 'ETC' TO '기타';

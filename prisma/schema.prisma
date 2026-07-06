@@ -36,7 +36,8 @@ model User {
 
   createdAt DateTime @default(now())
 
-  vacationRequests VacationRequest[]
+  vacationRequests         VacationRequest[] @relation("VacationRequestApplicant")
+  reviewedVacationRequests VacationRequest[] @relation("VacationRequestReviewer")
 }
 
 model Invitation {
@@ -80,7 +81,7 @@ model VacationRequest {
   id String @id @default(cuid())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation("VacationRequestApplicant", fields: [userId], references: [id])
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
@@ -93,6 +94,8 @@ model VacationRequest {
   reason    String?
 
   reviewedById String?
+  reviewedBy   User?   @relation("VacationRequestReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
   reviewedAt   DateTime?
   rejectReason String?
 
@@ -105,10 +108,10 @@ model VacationRequest {
 }
 
 enum VacationType {
-  ANNUAL
-  HALF_DAY
-  SICK
-  ETC
+  연차
+  반차
+  병가
+  기타
 }
 
 enum VacationStatus {

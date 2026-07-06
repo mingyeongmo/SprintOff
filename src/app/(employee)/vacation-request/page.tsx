@@ -1,10 +1,113 @@
+import { auth } from "@/auth/auth";
+import { prisma } from "@/lib/prisma";
+import { Role, VacationType } from "@prisma/client";
 import VacationRequestForm from "./VacationRequestForm";
 import "@/styles/vacation/vacation-request.scss";
+
+type VacationRequestPayload = {
+  type: VacationType;
+  startDate: string;
+  endDate: string;
+  reason: string;
+};
+
+const isDateInput = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
+
+const submitVacationRequestAction = async (payload: VacationRequestPayload) => {
+  "use server";
+
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    return { success: false as const, error: "로그인이 필요합니다." };
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email: {
+        equals: session.user.email.trim().toLowerCase(),
+        mode: "insensitive",
+      },
+    },
+    select: {
+      id: true,
+      companyId: true,
+      role: true,
+    },
+  });
+
+  if (!user?.companyId) {
+    return {
+      success: false as const,
+      error: "워크스페이스에 가입한 사용자만 휴가를 신청할 수 있습니다.",
+    };
+  }
+
+  if (user.role !== Role.EMPLOYEE) {
+    return {
+      success: false as const,
+      error: "직원 계정만 휴가를 신청할 수 있습니다.",
+    };
+  }
+
+  if (!Object.values(VacationType).includes(payload.type)) {
+    return { success: false as const, error: "올바른 휴가 유형이 아닙니다." };
+  }
+
+  if (!isDateInput(payload.startDate) || !isDateInput(payload.endDate)) {
+    return { success: false as const, error: "휴가 날짜를 선택해주세요." };
+  }
+
+  if (payload.startDate > payload.endDate) {
+    return {
+      success: false as const,
+      error: "종료일은 시작일보다 빠를 수 없습니다.",
+    };
+  }
+
+  const reason = payload.reason.trim();
+
+  if (reason.length < 10) {
+    return {
+      success: false as const,
+      error: "휴가 사유를 10자 이상 입력해주세요.",
+    };
+  }
+
+  const vacationRequest = await prisma.vacationRequest.create({
+    data: {
+      userId: user.id,
+      companyId: user.companyId,
+      type: payload.type,
+      startDate: new Date(`${payload.startDate}T00:00:00.000Z`),
+      endDate: new Date(`${payload.endDate}T00:00:00.000Z`),
+      reason,
+    },
+    select: {
+      id: true,
+      status: true,
+    },
+  });
+
+  console.log("Vacation request created:", {
+    ...payload,
+    id: vacationRequest.id,
+    status: vacationRequest.status,
+  });
+
+  return {
+    success: true as const,
+    requestId: vacationRequest.id,
+    status: vacationRequest.status,
+  };
+};
 
 const VacationRequestPage = () => {
   return (
     <section className="vacation-request">
-      <VacationRequestForm />
+      <VacationRequestForm
+        submitVacationRequestAction={submitVacationRequestAction}
+      />
 
       <aside className="vacation-request__aside">
         <section className="form-panel vacation-request__side-card">
