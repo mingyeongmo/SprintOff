@@ -2,6 +2,7 @@ import { auth } from "@/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { Role, VacationType } from "@prisma/client";
 import VacationRequestForm from "./VacationRequestForm";
+import { buildActiveVacationOverlapWhere } from "./vacationRequestOverlap";
 import "@/styles/vacation/vacation-request.scss";
 
 type VacationRequestPayload = {
@@ -74,13 +75,35 @@ const submitVacationRequestAction = async (payload: VacationRequestPayload) => {
     };
   }
 
+  const startDate = new Date(`${payload.startDate}T00:00:00.000Z`);
+  const endDate = new Date(`${payload.endDate}T00:00:00.000Z`);
+
+  const overlappingRequest = await prisma.vacationRequest.findFirst({
+    where: buildActiveVacationOverlapWhere({
+      userId: user.id,
+      companyId: user.companyId,
+      startDate,
+      endDate,
+    }),
+    select: {
+      id: true,
+    },
+  });
+
+  if (overlappingRequest) {
+    return {
+      success: false as const,
+      error: "이미 신청했거나 승인된 휴가와 기간이 겹칩니다.",
+    };
+  }
+
   const vacationRequest = await prisma.vacationRequest.create({
     data: {
       userId: user.id,
       companyId: user.companyId,
       type: payload.type,
-      startDate: new Date(`${payload.startDate}T00:00:00.000Z`),
-      endDate: new Date(`${payload.endDate}T00:00:00.000Z`),
+      startDate,
+      endDate,
       reason,
     },
     select: {

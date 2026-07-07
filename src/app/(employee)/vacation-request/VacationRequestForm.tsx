@@ -78,6 +78,13 @@ const VacationRequestForm = ({
     }
   };
 
+  const resetForm = () => {
+    setSelectedVacationType("연차");
+    setStartDate("");
+    setEndDate("");
+    setReason("");
+  };
+
   const handleSubmit: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
@@ -102,9 +109,8 @@ const VacationRequestForm = ({
         return;
       }
 
-      setSubmitSuccess(
-        `신청이 접수되었습니다. 상태: ${result.status}, ID: ${result.requestId}`,
-      );
+      setSubmitSuccess(`신청이 접수되었습니다.`);
+      resetForm();
     } catch (error) {
       console.error(error);
       setSubmitError("휴가 신청 중 오류가 발생했습니다.");
