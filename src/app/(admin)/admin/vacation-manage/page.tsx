@@ -1,6 +1,8 @@
 import { auth } from "@/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import VacationManageClient from "./VacationManageClient";
+import "@/styles/admin/vacation-manage.scss";
 
 const AdminVacationManagePage = async () => {
   const session = await auth();
@@ -30,6 +32,7 @@ const AdminVacationManagePage = async () => {
       companyId: admin.companyId,
     },
     select: {
+      id: true,
       type: true,
       status: true,
       startDate: true,
@@ -41,7 +44,6 @@ const AdminVacationManagePage = async () => {
         select: {
           name: true,
           email: true,
-          image: true,
         },
       },
     },
@@ -50,9 +52,16 @@ const AdminVacationManagePage = async () => {
     },
   });
 
-  console.log(vacationRequests);
-
-  return <pre>{JSON.stringify(vacationRequests, null, 2)}</pre>;
+  return (
+    <VacationManageClient
+      requests={vacationRequests.map((request) => ({
+        ...request,
+        startDate: request.startDate.toISOString(),
+        endDate: request.endDate.toISOString(),
+        createdAt: request.createdAt.toISOString(),
+      }))}
+    />
+  );
 };
 
 export default AdminVacationManagePage;
