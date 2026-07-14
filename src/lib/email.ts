@@ -32,7 +32,8 @@ export const sendInvitationEmail = async ({
   role,
 }: InvitationEmailInput) => {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "SprintOff <onboarding@resend.dev>";
+  const from =
+    process.env.RESEND_FROM_EMAIL ?? "SprintOff <onboarding@resend.dev>";
 
   if (!apiKey) {
     throw new Error("RESEND_API_KEY is not configured.");
@@ -55,18 +56,18 @@ export const sendInvitationEmail = async ({
       to: [to],
       subject: `[SprintOff] ${safeCompanyName} 초대장이 도착했습니다`,
       html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #172033;">
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #212529;">
           <h1 style="font-size: 24px;">SprintOff 팀 초대</h1>
           <p>${safeInvitedByName}님이 <strong>${safeCompanyName}</strong> 워크스페이스에 ${roleLabel} 권한으로 초대했습니다.</p>
           <p>아래 버튼을 눌러 Google 계정으로 로그인하고 초대를 수락하세요.</p>
           <p>
-            <a href="${safeInviteUrl}" style="display: inline-block; padding: 12px 16px; border-radius: 8px; background: #2563eb; color: #ffffff; text-decoration: none; font-weight: 700;">
+            <a href="${safeInviteUrl}" style="display: inline-block; padding: 12px 16px; border-radius: 8px; background: #00c471; color: #ffffff; text-decoration: none; font-weight: 700;">
               초대 수락하기
             </a>
           </p>
-          <p style="color: #687083;">이 초대는 ${expiresLabel}까지 유효합니다.</p>
-          <p style="color: #687083;">버튼이 열리지 않으면 아래 링크를 브라우저에 붙여넣어 주세요.</p>
-          <p style="word-break: break-all; color: #2563eb;">${safeInviteUrl}</p>
+          <p style="color: #868e96;">이 초대는 ${expiresLabel}까지 유효합니다.</p>
+          <p style="color: #868e96;">버튼이 열리지 않으면 아래 링크를 브라우저에 붙여넣어 주세요.</p>
+          <p style="word-break: break-all; color: #00a760;">${safeInviteUrl}</p>
         </div>
       `,
       text: `SprintOff 초대장\n\n${safeInvitedByName}님이 ${safeCompanyName} 워크스페이스에 ${roleLabel} 권한으로 초대했습니다.\n초대 수락: ${inviteUrl}\n만료일: ${expiresLabel}`,

@@ -12,12 +12,12 @@
   width: fit-content;
   padding: 13px 18px;
   background: var(--primary);
-  color: #ffffff;
+  color: var(--primary-foreground);
   font-weight: 700;
 }
 
 .primary-button:hover {
-  background: var(--primary-dark);
+  background: var(--primary-hover);
 }
 
 .text-button {
@@ -59,7 +59,7 @@
 }
 
 .form-success {
-  color: #047857;
+  color: var(--success);
   font-weight: 700;
 }
 
