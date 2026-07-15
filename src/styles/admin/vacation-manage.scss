@@ -303,6 +303,38 @@
       }
     }
   }
+
+  &__detail-actions > .form-error,
+  &__reject-form {
+    grid-column: 1 / -1;
+  }
+
+  &__reject-form {
+    display: grid;
+    gap: 8px;
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--foreground);
+      padding: 10px;
+      line-height: 1.5;
+    }
+  }
+
+  &__reject-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
 }
 
 @media (max-width: 1100px) {

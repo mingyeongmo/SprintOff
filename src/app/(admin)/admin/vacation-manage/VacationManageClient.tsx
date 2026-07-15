@@ -1,6 +1,7 @@
 "use client";
 
 import type { VacationStatus, VacationType } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import VacationRequestDetailPanel from "./VacationRequestDetailPanel";
 
@@ -23,6 +24,11 @@ type VacationManageClientProps = {
 };
 
 type StatusFilter = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
+type ReviewStatus = "APPROVED" | "REJECTED";
+type ReviewResponse = {
+  success?: boolean;
+  error?: string;
+};
 
 const FILTERS: { label: string; value: StatusFilter }[] = [
   { label: "전체", value: "ALL" },
@@ -41,10 +47,13 @@ const STATUS_LABELS: Record<VacationStatus, string> = {
 const formatDate = (date: string) => date.slice(0, 10).replaceAll("-", ".");
 
 const VacationManageClient = ({ requests }: VacationManageClientProps) => {
+  const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("PENDING");
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
     null,
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const filteredRequests =
     statusFilter === "ALL"
@@ -69,6 +78,39 @@ const VacationManageClient = ({ requests }: VacationManageClientProps) => {
   const changeFilter = (filter: StatusFilter) => {
     setStatusFilter(filter);
     setSelectedRequestId(null);
+    setErrorMessage("");
+  };
+
+  const reviewRequest = async (status: ReviewStatus, rejectReason?: string) => {
+    if (!selectedRequest || isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    const response = await fetch(`/api/vacation-requests/${selectedRequest.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status,
+        rejectReason,
+      }),
+    });
+
+    const data = (await response.json().catch(() => ({}))) as ReviewResponse;
+
+    if (!response.ok) {
+      setErrorMessage(data.error ?? "휴가 신청 처리에 실패했습니다.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    setSelectedRequestId(null);
+    setIsSubmitting(false);
+    router.refresh();
   };
 
   return (
@@ -150,10 +192,14 @@ const VacationManageClient = ({ requests }: VacationManageClientProps) => {
                         }
                         key={request.id}
                         tabIndex={0}
-                        onClick={() => setSelectedRequestId(request.id)}
+                        onClick={() => {
+                          setSelectedRequestId(request.id);
+                          setErrorMessage("");
+                        }}
                         onKeyDown={(event) => {
                           if (event.key === "Enter" || event.key === " ") {
                             setSelectedRequestId(request.id);
+                            setErrorMessage("");
                           }
                         }}
                       >
@@ -193,9 +239,11 @@ const VacationManageClient = ({ requests }: VacationManageClientProps) => {
         {selectedRequest && (
           <VacationRequestDetailPanel
             selectedRequest={selectedRequest}
+            errorMessage={errorMessage}
+            isSubmitting={isSubmitting}
             onClose={() => setSelectedRequestId(null)}
-            onApprove={() => console.log("승인", selectedRequest.id)}
-            onReject={() => console.log("반려", selectedRequest.id)}
+            onApprove={() => reviewRequest("APPROVED")}
+            onReject={(rejectReason) => reviewRequest("REJECTED", rejectReason)}
             formatDate={formatDate}
           />
         )}

@@ -1,10 +1,13 @@
+import { useState } from "react";
 import type { VacationManageRequest } from "./VacationManageClient";
 
 type VacationRequestDetailPanelProps = {
   selectedRequest: VacationManageRequest;
+  errorMessage: string;
+  isSubmitting: boolean;
   onClose: () => void;
   onApprove: () => void;
-  onReject: () => void;
+  onReject: (rejectReason: string) => void;
   formatDate: (date: string) => string;
 };
 
@@ -18,14 +21,38 @@ const calculateDays = (startDate: string, endDate: string) => {
 
 const VacationRequestDetailPanel = ({
   selectedRequest,
+  errorMessage,
+  isSubmitting,
   onClose,
   onApprove,
   onReject,
   formatDate,
 }: VacationRequestDetailPanelProps) => {
-  const isReject = () => {};
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectReasonError, setRejectReasonError] = useState("");
 
-  const isApprove = () => {};
+  const openRejectForm = () => {
+    setIsRejecting(true);
+    setRejectReasonError("");
+  };
+
+  const closeRejectForm = () => {
+    setIsRejecting(false);
+    setRejectReason("");
+    setRejectReasonError("");
+  };
+
+  const submitReject = () => {
+    const trimmedRejectReason = rejectReason.trim();
+
+    if (!trimmedRejectReason) {
+      setRejectReasonError("반려 사유를 입력해주세요.");
+      return;
+    }
+
+    onReject(trimmedRejectReason);
+  };
 
   return (
     <aside className="vacation-manage__detail-panel">
@@ -50,7 +77,7 @@ const VacationRequestDetailPanel = ({
             <dd>
               {calculateDays(
                 selectedRequest.startDate,
-                selectedRequest.endDate,
+                selectedRequest.endDate
               )}
               일
             </dd>
@@ -79,12 +106,62 @@ const VacationRequestDetailPanel = ({
       </div>
 
       <div className="vacation-manage__detail-actions">
-        <button className="reject" type="button" onClick={onReject}>
-          반려
-        </button>
-        <button className="is-primary" type="button" onClick={onApprove}>
-          승인
-        </button>
+        {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
+        {isRejecting ? (
+          <div className="vacation-manage__reject-form">
+            <label htmlFor="rejectReason">반려 사유</label>
+            <textarea
+              id="rejectReason"
+              value={rejectReason}
+              rows={4}
+              placeholder="예: 해당 기간에 팀 일정이 겹쳐 조정이 필요합니다."
+              onChange={(e) => {
+                setRejectReason(e.target.value);
+                setRejectReasonError("");
+              }}
+              disabled={isSubmitting}
+            />
+            {rejectReasonError ? (
+              <p className="form-error">{rejectReasonError}</p>
+            ) : null}
+            <div className="vacation-manage__reject-actions">
+              <button
+                type="button"
+                onClick={closeRejectForm}
+                disabled={isSubmitting}
+              >
+                취소
+              </button>
+              <button
+                className="reject"
+                type="button"
+                onClick={submitReject}
+                disabled={isSubmitting}
+              >
+                반려 확정
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <button
+              className="reject"
+              type="button"
+              onClick={openRejectForm}
+              disabled={isSubmitting}
+            >
+              반려
+            </button>
+            <button
+              className="is-primary"
+              type="button"
+              onClick={onApprove}
+              disabled={isSubmitting}
+            >
+              승인
+            </button>
+          </>
+        )}
       </div>
     </aside>
   );
