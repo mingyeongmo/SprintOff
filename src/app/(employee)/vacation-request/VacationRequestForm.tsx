@@ -11,10 +11,10 @@ type VacationTypeOption = {
 };
 
 const VACATION_TYPES: VacationTypeOption[] = [
-  { label: "연차", value: "연차", description: "1일 단위 휴가" },
-  { label: "반차", value: "반차", description: "오전/오후 0.5일" },
-  { label: "병가", value: "병가", description: "질병, 부상 치료" },
-  { label: "기타", value: "기타", description: "경조사, 공가 등" },
+  { label: "연차", value: "ANNUAL", description: "1일 단위 휴가" },
+  { label: "반차", value: "HALF_DAY", description: "오전/오후 0.5일" },
+  { label: "병가", value: "SICK", description: "질병, 부상 치료" },
+  { label: "기타", value: "ETC", description: "경조사, 공가 등" },
 ];
 
 type VacationRequestPayload = {
@@ -45,7 +45,7 @@ const VacationRequestForm = ({
   submitVacationRequestAction,
 }: VacationRequestFormProps) => {
   const [selectedVacationType, setSelectedVacationType] =
-    useState<VacationType>("연차");
+    useState<VacationType>("ANNUAL");
 
   const TODAY = format(new Date(), "yyyy-MM-dd");
 
@@ -79,7 +79,7 @@ const VacationRequestForm = ({
   };
 
   const resetForm = () => {
-    setSelectedVacationType("연차");
+    setSelectedVacationType("ANNUAL");
     setStartDate("");
     setEndDate("");
     setReason("");

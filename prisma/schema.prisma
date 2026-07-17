@@ -108,10 +108,10 @@ model VacationRequest {
 }
 
 enum VacationType {
-  연차
-  반차
-  병가
-  기타
+  ANNUAL
+  HALF_DAY
+  SICK
+  ETC
 }
 
 enum VacationStatus {

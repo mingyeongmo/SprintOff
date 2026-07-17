@@ -9,6 +9,7 @@ type VacationRequestDetailPanelProps = {
   onApprove: () => void;
   onReject: (rejectReason: string) => void;
   formatDate: (date: string) => string;
+  vacationTypeLabel: string;
 };
 
 const calculateDays = (startDate: string, endDate: string) => {
@@ -27,6 +28,7 @@ const VacationRequestDetailPanel = ({
   onApprove,
   onReject,
   formatDate,
+  vacationTypeLabel,
 }: VacationRequestDetailPanelProps) => {
   const [isRejecting, setIsRejecting] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -70,14 +72,14 @@ const VacationRequestDetailPanel = ({
         <dl className="vacation-manage__detail-grid">
           <div>
             <dt>휴가 유형</dt>
-            <dd>{selectedRequest.type}</dd>
+            <dd>{vacationTypeLabel}</dd>
           </div>
           <div>
             <dt>신청 일수</dt>
             <dd>
               {calculateDays(
                 selectedRequest.startDate,
-                selectedRequest.endDate
+                selectedRequest.endDate,
               )}
               일
             </dd>

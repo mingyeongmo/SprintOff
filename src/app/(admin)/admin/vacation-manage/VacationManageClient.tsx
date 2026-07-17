@@ -44,6 +44,13 @@ const STATUS_LABELS: Record<VacationStatus, string> = {
   CANCELED: "취소됨",
 };
 
+const VACATION_TYPE_LABELS: Record<VacationType, string> = {
+  ANNUAL: "연차",
+  HALF_DAY: "반차",
+  SICK: "병가",
+  ETC: "기타",
+};
+
 const formatDate = (date: string) => date.slice(0, 10).replaceAll("-", ".");
 
 const VacationManageClient = ({ requests }: VacationManageClientProps) => {
@@ -214,7 +221,7 @@ const VacationManageClient = ({ requests }: VacationManageClientProps) => {
                             </div>
                           </div>
                         </td>
-                        <td>{request.type}</td>
+                        <td>{VACATION_TYPE_LABELS[request.type]}</td>
                         <td>
                           {formatDate(request.startDate)} -{" "}
                           {formatDate(request.endDate)}
@@ -245,6 +252,7 @@ const VacationManageClient = ({ requests }: VacationManageClientProps) => {
             onApprove={() => reviewRequest("APPROVED")}
             onReject={(rejectReason) => reviewRequest("REJECTED", rejectReason)}
             formatDate={formatDate}
+            vacationTypeLabel={VACATION_TYPE_LABELS[selectedRequest.type]}
           />
         )}
       </div>
